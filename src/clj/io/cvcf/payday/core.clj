@@ -1,26 +1,27 @@
 (ns io.cvcf.payday.core
   (:require
-    [clojure.tools.logging :as log]
-    [integrant.core :as ig]
-    [io.cvcf.payday.config :as config]
-    [io.cvcf.payday.env :refer [defaults]]
+   [clojure.tools.logging :as log]
+   [integrant.core :as ig]
+   [io.cvcf.payday.config :as config]
+   [io.cvcf.payday.env :refer [defaults]]
 
-    ;; Edges       
-    [kit.edge.server.undertow]
-    [io.cvcf.payday.web.handler]
+    ;; Edges
+   [kit.edge.server.undertow]
+   [io.cvcf.payday.web.handler]
 
     ;; Routes
-    [io.cvcf.payday.web.routes.api]
-    )
+   [io.cvcf.payday.web.routes.api]
+
+   [io.cvcf.payday.web.routes.ui])
   (:gen-class))
 
 ;; log uncaught exceptions in threads
 (Thread/setDefaultUncaughtExceptionHandler
-  (reify Thread$UncaughtExceptionHandler
-    (uncaughtException [_ thread ex]
-      (log/error {:what :uncaught-exception
-                  :exception ex
-                  :where (str "Uncaught exception on" (.getName thread))}))))
+ (reify Thread$UncaughtExceptionHandler
+   (uncaughtException [_ thread ex]
+     (log/error {:what :uncaught-exception
+                 :exception ex
+                 :where (str "Uncaught exception on" (.getName thread))}))))
 
 (defonce system (atom nil))
 
