@@ -19,6 +19,7 @@
   (page
    [:head
     [:meta {:charset "UTF-8"}]
-    [:title "Htmx + Kit"]
+    [:title "Wyndham Payday"]
+    [:link {:href "/css/bulma.min.css" :rel "stylesheet" :type "text/css"}]
     [:script {:src "/js/htmx.min.js" :defer true}]]
    [:body (render/walk-attrs body)]))
