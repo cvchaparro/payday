@@ -5,11 +5,11 @@
    [io.cvcf.payday.config :as config]
    [io.cvcf.payday.env :refer [defaults]]
 
-    ;; Edges
+   ;; Edges
    [kit.edge.server.undertow]
    [io.cvcf.payday.web.handler]
 
-    ;; Routes
+   ;; Routes
    [io.cvcf.payday.web.routes.api]
 
    [io.cvcf.payday.web.routes.ui])
