@@ -11,7 +11,6 @@
 
    ;; Routes
    [io.cvcf.payday.web.routes.api]
-
    [io.cvcf.payday.web.routes.ui])
   (:gen-class))
 
