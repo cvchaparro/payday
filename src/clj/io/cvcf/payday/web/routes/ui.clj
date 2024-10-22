@@ -26,11 +26,12 @@
 
 (derive :reitit.routes/ui :reitit/routes)
 
-(defn page-routes [{:keys [base-path] :as opts}]
-  [["/deals" (deals/deals-routes base-path)]])
+(defn page-routes []
+  [;; Primary routes
+   ["/deals" (deals/deals-routes)]])
 
 (defmethod ig/init-key :reitit.routes/ui
   [_ {:keys [base-path]
       :or   {base-path ""}
       :as   opts}]
-  (fn [] [base-path (route-data opts) (page-routes opts)]))
+  (fn [] [base-path (route-data opts) (page-routes)]))
