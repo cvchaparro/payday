@@ -20,7 +20,7 @@
        (s/join "")
        Integer/valueOf))
 
-(defn down-payment-input [selected]
+(defcomponent down-payment [req selected]
   (let [selected (keyword selected)
         minimum (get-in deal-types [selected :min-down])
         maximum (get-in deal-types [selected :total])]
@@ -74,7 +74,7 @@
                    :endpoint  "/deals/down-payment"
                    :selected  selected))
 
-       (c/field "Down payment" (down-payment-input selected))])
+       (c/field "Down payment" (down-payment nil selected))])
 
     (c/field "TO"
       (c/input "to" :placeholder "e.g. Cameron Diaz" :required? false))
@@ -82,9 +82,6 @@
     (c/checkbox "Split?")
 
     (c/button "Add" :type "submit" :classes ["is-primary"])]])
-
-(defcomponent down-payment [req selected]
-  (down-payment-input selected))
 
 (defcomponent all-deals [req & {:keys [eid]}]
   [:div.column {:id eid}
