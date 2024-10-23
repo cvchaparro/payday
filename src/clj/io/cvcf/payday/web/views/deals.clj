@@ -31,6 +31,10 @@
                      :min minimum
                      :max maximum})))
 
+(defn ->map [m]
+  (zipmap (map #(keyword (s/replace %1 #"\s+" "-")) (keys m))
+          (vals m)))
+
 (defcomponent new-deal [req target-id endpoint]
   [:div.column
    [:h3.title.is-3 "New deal"]
@@ -92,10 +96,6 @@
          :tour-type :frontline-rep
          ;; Deal information
          :contract :member :deal-type :down-payment :to])])
-
-(defn ->map [m]
-  (zipmap (map #(keyword (s/replace %1 #"\s+" "-")) (keys m))
-          (vals m)))
 
 (defn deals-routes []
   (let [deals-list-id "deals-list"]
