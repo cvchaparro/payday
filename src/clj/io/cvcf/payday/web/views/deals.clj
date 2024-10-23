@@ -31,7 +31,7 @@
                      :min minimum
                      :max maximum})))
 
-(defcomponent ^:endpoint new-deal [req target-id endpoint]
+(defcomponent new-deal [req target-id endpoint]
   [:div.column
    [:h3.title.is-3 "New deal"]
    [:form {:id id :hx-post endpoint :hx-target (c/id target-id) :hx-swap "outerHTML"}
@@ -82,7 +82,7 @@
 (defcomponent down-payment [req selected]
   (down-payment-input selected))
 
-(defcomponent all [req & {:keys [eid]}]
+(defcomponent all-deals [req & {:keys [eid]}]
   [:div.column {:id eid}
    [:h3.title.is-3 "Deals"]
    (map #(vec [:p (get req %1)])
@@ -102,8 +102,10 @@
     [["" (fn [req]
            (page-htmx [:div.columns
                        (new-deal req deals-list-id "/deals/all")
-                       (all req :eid deals-list-id)]))]
+                       (all-deals req :eid deals-list-id)]))]
+     ["/new" (fn [req]
+               (ui (new-deal req deals-list-id "/deals/all")))]
      ["/all" (fn [{:keys [form-params]}]
-               (ui (all (->map form-params) :eid deals-list-id)))]
+               (ui (all-deals (->map form-params) :eid deals-list-id)))]
      ["/down-payment" (fn [{:keys [params]}]
                         (ui (down-payment nil (:deal-type (->map params)))))]]))
