@@ -78,13 +78,13 @@
 
 (defn deals-routes []
   (let [deals-list-id "deals-list"]
-    [["" (fn [req]
-           (page-htmx [:div.columns
-                       (new-deal req deals-list-id "/deals/all")
-                       (all-deals req :eid deals-list-id)]))]
-     ["/new" (fn [req]
-               (ui (new-deal req deals-list-id "/deals/all")))]
-     ["/all" (fn [{:keys [form-params]}]
-               (ui (all-deals (h/->map form-params) :eid deals-list-id)))]
-     ["/down-payment" (fn [{:keys [params]}]
-                        (ui (down-payment nil (:deal-type (h/->map params)))))]]))
+    [["" {:get (fn [req]
+                 (page-htmx [:div.columns
+                             (new-deal req deals-list-id "/deals/all")
+                             (all-deals req :eid deals-list-id)]))}]
+     ["/new" {:get (fn [req]
+                     (ui (new-deal req deals-list-id "/deals/all")))}]
+     ["/all" {:post (fn [{:keys [form-params]}]
+                      (ui (all-deals (h/->map form-params) :eid deals-list-id)))}]
+     ["/down-payment" {:get (fn [{:keys [params]}]
+                              (ui (down-payment nil (:deal-type (h/->map params)))))}]]))
