@@ -1,39 +1,21 @@
 (ns io.cvcf.payday.web.views.deals
   (:require
-   [clojure.string :as s]
+   [io.cvcf.payday.helpers :as h]
+   [io.cvcf.payday.web.controllers.deals :as deals]
    [io.cvcf.payday.web.views.components :as c]
    [io.cvcf.payday.web.htmx :refer [page-htmx ui]]
    [simpleui.core :as simpleui :refer [defcomponent]]))
 
-(def deal-types {:300k {:name "300k"
-                        :min-down 349
-                        :down-cutoff 1300
-                        :total 3178.5}
-                 :400k {:name "400k"
-                        :min-down 449
-                        :down-cutoff 1400
-                        :total 4036.5}})
-
-(defn disco-package->num [package-name]
-  (->> (name package-name)
-       (take-while Character/isDigit)
-       (s/join "")
-       Integer/valueOf))
-
 (defcomponent down-payment [req selected]
   (let [selected (keyword selected)
-        minimum (get-in deal-types [selected :min-down])
-        maximum (get-in deal-types [selected :total])]
+        minimum (get-in deals/deal-types [selected :min-down])
+        maximum (get-in deals/deal-types [selected :total])]
     (c/input "down-payment"
              :type "number"
              :placeholder "e.g. 1234.56"
              :extra {:step "0.01"
                      :min minimum
                      :max maximum})))
-
-(defn ->map [m]
-  (zipmap (map #(keyword (s/replace %1 #"\s+" "-")) (keys m))
-          (vals m)))
 
 (defcomponent new-deal [req target-id endpoint]
   [:div.column
@@ -64,9 +46,9 @@
       (c/field "Contract #" (c/input "contract" :placeholder "e.g. 00065..."))
       (c/field "Member #"   (c/input "member" :placeholder "e.g. 00203...")))
 
-    (let [deal-names (keys deal-types)
+    (let [deal-names (keys deals/deal-types)
           values (map name deal-names)
-          selected (format "%dk" (apply max (map disco-package->num deal-names)))]
+          selected (format "%dk" (apply max (map deals/disco-package->num deal-names)))]
       [:div
        (c/field "Deal type"
          (c/select "Deal Type" values
@@ -103,6 +85,6 @@
      ["/new" (fn [req]
                (ui (new-deal req deals-list-id "/deals/all")))]
      ["/all" (fn [{:keys [form-params]}]
-               (ui (all-deals (->map form-params) :eid deals-list-id)))]
+               (ui (all-deals (h/->map form-params) :eid deals-list-id)))]
      ["/down-payment" (fn [{:keys [params]}]
-                        (ui (down-payment nil (:deal-type (->map params)))))]]))
+                        (ui (down-payment nil (:deal-type (h/->map params)))))]]))
