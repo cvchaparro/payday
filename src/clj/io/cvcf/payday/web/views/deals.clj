@@ -18,7 +18,7 @@
                      :max maximum})))
 
 (defcomponent new-deal [req target-id endpoint]
-  [:div.column
+  [:div.column.is-two-fifths
    [:h3.title.is-3 "New deal"]
    [:form {:id id :hx-post endpoint :hx-target (c/id target-id) :hx-swap "outerHTML"}
     (c/field "Date"
@@ -63,10 +63,11 @@
 
     (c/checkbox "Split?")
 
-    (c/button "Add" :type "submit" :classes ["is-primary"])]])
+    [:div.buttons.is-centered
+     (c/button "Add" :type "submit" :classes ["is-primary" "is-medium"])]]])
 
 (defcomponent all-deals [req & {:keys [eid]}]
-  [:div.column {:id eid}
+  [:div.column.is-two-fifths {:id eid}
    [:h3.title.is-3 "Deals"]
    (map #(vec [:p (get req %1)])
         [;; Guest information
@@ -79,7 +80,7 @@
 (defn deals-routes []
   (let [deals-list-id "deals-list"]
     [["" {:get (fn [req]
-                 (page-htmx [:div.columns
+                 (page-htmx [:div.columns.is-centered
                              (new-deal req deals-list-id "/deals/all")
                              (all-deals req :eid deals-list-id)]))}]
      ["/new" {:get (fn [req]
