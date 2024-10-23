@@ -20,10 +20,13 @@
         metosin/muuntaja                {:mvn/version "0.6.8"}
 
         ;; kit Libs
-        io.github.kit-clj/kit-core     {:mvn/version "1.0.8"}
-        io.github.kit-clj/kit-undertow {:mvn/version "1.0.7"}
-        simpleui/simpleui              {:git/url "https://github.com/whamtet/simpleui",
-                                        :git/sha "a107d7a8a69755dae6cd9954992614a86504c257"}}
+        io.github.kit-clj/kit-core         {:mvn/version "1.0.8"}
+        io.github.kit-clj/kit-undertow     {:mvn/version "1.0.7"}
+        simpleui/simpleui                  {:git/url "https://github.com/whamtet/simpleui",
+                                            :git/sha "a107d7a8a69755dae6cd9954992614a86504c257"}
+        io.github.kit-clj/kit-sql-conman   {:mvn/version "1.10.4"}
+        io.github.kit-clj/kit-sql-migratus {:mvn/version "1.0.4"}
+        org.xerial/sqlite-jdbc             {:mvn/version "3.46.0.0"}}
  :aliases {:build {:deps       {io.github.clojure/tools.build {:mvn/version "0.9.6"}}
                    :ns-default build}
 

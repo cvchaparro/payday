@@ -11,7 +11,9 @@
 
    ;; Routes
    [io.cvcf.payday.web.routes.api]
-   [io.cvcf.payday.web.routes.ui])
+   [io.cvcf.payday.web.routes.ui]
+   [kit.edge.db.sql.conman]
+   [kit.edge.db.sql.migratus])
   (:gen-class))
 
 ;; log uncaught exceptions in threads
