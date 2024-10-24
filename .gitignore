@@ -13,6 +13,7 @@ modules/
 *.iml
 .idea/
 *.bak
+*.db
 
 # clj-kondo
 .clj-kondo/.cache/
