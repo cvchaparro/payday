@@ -82,13 +82,12 @@
                            deal]
                        [:li
                         [:div.card
+                         [:header.card-header
+                          [:div.card-header-title.is-centered.is-vcentered
+                           [:div.is-large
+                            (clojure.string/join ", " (map clojure.string/trim (clojure.string/split members #",")))]]]
+                         [:hr]
                          [:div.card-content
-                          [:div [:strong "Date: "] date]
-                          [:div [:strong "Contract #: "] contract_num]
-                          [:div [:strong "Member #: "] member_num]
-                          [:div
-                           [:strong "Guest(s): "]
-                           (clojure.string/join ", " (map clojure.string/trim (clojure.string/split members #",")))]
                           [:div [:strong "Email: "] [:a {:href (format "mailto:%s" email)} email]]
                           [:div [:strong "Phone: "] [:a {:href (format "tel:%s" phone)} phone]]
                           (when second_phone
@@ -98,6 +97,7 @@
                             addr_street [:br]
                             addr_city ", " addr_state " " addr_zip [:br]
                             addr_country]]
+                          [:br]
                           [:div [:strong "Tour Type: "] tour_type]
                           [:div [:strong "Frontline Rep: "] frontline_rep]
 
@@ -105,7 +105,11 @@
                           [:div [:strong "Down Payment: "] "$" down_payment]
                           (when (and turn_over (seq turn_over))
                             [:div [:strong "Turn Over: "] turn_over])
-                          [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]]]))
+                          [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]
+                         [:div.card-footer
+                          [:div.card-footer-item [:div.is-small date]]
+                          [:div.card-footer-item [:strong "Contract #: "] contract_num]
+                          [:div.card-footer-item [:strong "Member #: "] member_num]]]]))
                    (query-fn :get-deals {}))))]])
 
 (defn create-deal! [& {:keys [query-fn params eid]}]
