@@ -71,17 +71,17 @@
 (defn all-deals [& {:keys [query-fn eid]}]
   [:div.column.is-two-fifths {:id eid}
    [:h3.title.is-3 "Deals"]
-   [:div.card
-    [:div.card-content
-     [:div.content
-      (vec (concat [:ol {:type "1"}]
-                   (mapv (fn [deal]
-                           (let [{:keys [date members email phone second_phone
-                                         addr_street addr_city addr_state addr_zip addr_country
-                                         tour_type frontline_rep
-                                         contract_num member_num deal_type down_payment turn_over split]}
-                                 deal]
-                             [:li
+   [:div.content
+    (vec (concat [:ol {:type "1"}]
+                 (mapv (fn [deal]
+                         (let [{:keys [date members email phone second_phone
+                                       addr_street addr_city addr_state addr_zip addr_country
+                                       tour_type frontline_rep
+                                       contract_num member_num deal_type down_payment turn_over split]}
+                               deal]
+                           [:li
+                            [:div.card
+                             [:div.card-content
                               [:div [:strong "Date: "] date]
                               [:div [:strong "Contract #: "] contract_num]
                               [:div [:strong "Member #: "] member_num]
@@ -104,8 +104,8 @@
                               [:div [:strong "Down Payment: "] "$" down_payment]
                               (when (and turn_over (seq turn_over))
                                 [:div [:strong "Turn Over: "] turn_over])
-                              [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]))
-                         (query-fn :get-deals {}))))]]]])
+                              [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]]]))
+                       (query-fn :get-deals {}))))]])
 
 (defn create-deal! [& {:keys [query-fn params eid]}]
   (let [{:keys [date name email phone
