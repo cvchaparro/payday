@@ -1,12 +1,13 @@
 (ns io.cvcf.payday.web.views.deals
   (:require
+   [clojure.string :as s]
+
    [io.cvcf.payday.helpers :as h]
    [io.cvcf.payday.web.controllers.deals :as deals]
    [io.cvcf.payday.web.views.components :as c]
-   [io.cvcf.payday.web.htmx :refer [page-htmx ui]]
-   [simpleui.core :as simpleui :refer [defcomponent]]))
+   [io.cvcf.payday.web.htmx :refer [page-htmx ui]]))
 
-(defcomponent down-payment [req selected]
+(defn down-payment [selected]
   (let [selected (keyword selected)
         minimum (get-in deals/deal-types [selected :min-down])
         maximum (get-in deals/deal-types [selected :total])]
@@ -17,11 +18,11 @@
                      :min minimum
                      :max maximum})))
 
-(defcomponent new-deal [req target-id endpoint]
+(defn new-deal [& {:keys [target-id endpoint]}]
   [:div.column.is-two-fifths
    [:h3.title.is-3 "New deal"]
    [:div.box
-    [:form {:id id :hx-post endpoint :hx-target (c/id target-id) :hx-swap "outerHTML"}
+    [:form {:hx-post endpoint :hx-target (c/id target-id) :hx-swap "outerHTML"}
      (c/field "Date" (c/input "date" :type "date" :placeholder nil))
 
      (c/field-group "Guest Information"
@@ -57,7 +58,7 @@
                       :endpoint  "/deals/down-payment"
                       :selected  selected))
 
-          (c/field "Down payment" (down-payment nil selected))])
+          (c/field "Down payment" (down-payment selected))])
 
        (c/field "TO"
          (c/input "to" :placeholder "e.g. Cameron Diaz" :required? false))
@@ -67,26 +68,86 @@
        [:div.buttons.is-centered
         (c/button "Add" :type "submit" :classes ["is-primary" "is-medium"])])]]])
 
-(defcomponent all-deals [req & {:keys [eid]}]
+(defn all-deals [& {:keys [query-fn eid]}]
   [:div.column.is-two-fifths {:id eid}
    [:h3.title.is-3 "Deals"]
-   (map #(vec [:p (get req %1)])
-        [;; Guest information
-         :date :name :email :phone :street :city :state :zip-code :country
-         ;; Tour information
-         :tour-type :frontline-rep
-         ;; Deal information
-         :contract :member :deal-type :down-payment :to])])
+   [:div.card
+    [:div.card-content
+     [:div.content
+      (vec (concat [:ol {:type "1"}]
+                   (mapv (fn [deal]
+                           (let [{:keys [date members email phone second_phone
+                                         addr_street addr_city addr_state addr_zip addr_country
+                                         tour_type frontline_rep
+                                         contract_num member_num deal_type down_payment turn_over split]}
+                                 deal]
+                             [:li
+                              [:div [:strong "Date: "] date]
+                              [:div [:strong "Contract #: "] contract_num]
+                              [:div [:strong "Member #: "] member_num]
+                              [:div
+                               [:strong "Guest(s): "]
+                               (clojure.string/join ", " (map clojure.string/trim (clojure.string/split members #",")))]
+                              [:div [:strong "Email: "] [:a {:href (format "mailto:%s" email)} email]]
+                              [:div [:strong "Phone: "] [:a {:href (format "tel:%s" phone)} phone]]
+                              (when second_phone
+                                [:div [:strong "Secondary Phone​: "] [:a {:href (format "tel:%s" second_phone)} second_phone]])
+                              [:div [:strong "Address:"]
+                               [:address
+                                addr_street [:br]
+                                addr_city ", " addr_state " " addr_zip [:br]
+                                addr_country]]
+                              [:div [:strong "Tour Type: "] tour_type]
+                              [:div [:strong "Frontline Rep: "] frontline_rep]
 
-(defn deals-routes []
+                              [:div [:strong "Deal Type: "] deal_type]
+                              [:div [:strong "Down Payment: "] "$" down_payment]
+                              (when (and turn_over (seq turn_over))
+                                [:div [:strong "Turn Over: "] turn_over])
+                              [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]))
+                         (query-fn :get-deals {}))))]]]])
+
+(defn create-deal! [& {:keys [query-fn params eid]}]
+  (let [{:keys [date name email phone
+                street city state zip-code country
+                tour-type frontline-rep
+                contract member
+                deal-type down-payment split to]}
+        (h/->map params)]
+    (query-fn :add-deal! {:date          date
+                          :members       name
+                          :email         email
+                          :phone         phone
+                          :second_phone  nil
+                          :addr_street   street
+                          :addr_city     city
+                          :addr_state    state
+                          :addr_zip      zip-code
+                          :addr_country  country
+
+                          :tour_type     tour-type
+                          :frontline_rep frontline-rep
+
+                          :contract_num  contract
+                          :member_num    member
+                          :deal_type     deal-type
+                          :down_payment  down-payment
+                          :turn_over     (when (seq to) to)
+                          :split         (and split (contains? #{"on" "true"} split))})
+    (ui (all-deals :query-fn query-fn :eid eid))))
+
+(defn deals-routes [{:keys [query-fn]}]
   (let [deals-list-id "deals-list"]
-    [["" {:get (fn [req]
+    [["" {:get (fn [_]
                  (page-htmx [:div.columns.is-centered
-                             (new-deal req deals-list-id "/deals/all")
-                             (all-deals req :eid deals-list-id)]))}]
-     ["/new" {:get (fn [req]
-                     (ui (new-deal req deals-list-id "/deals/all")))}]
-     ["/all" {:post (fn [{:keys [form-params]}]
-                      (ui (all-deals (h/->map form-params) :eid deals-list-id)))}]
+                             (new-deal :target-id deals-list-id :endpoint "/deals/add")
+                             (all-deals :query-fn query-fn :eid deals-list-id)]))}]
+     ["/new" {:get (fn [_]
+                     (ui (new-deal :target-id deals-list-id :endpoint "/deals/add")))}]
+     ["/add" {:post (fn [{:keys [params]}]
+                      (create-deal! :query-fn query-fn :params params :eid deals-list-id))}]
+     ["/all" {:get (fn [_]
+                     (page-htmx [:div.columns.is-centered
+                                 (all-deals :query-fn query-fn :eid deals-list-id)]))}]
      ["/down-payment" {:get (fn [{:keys [params]}]
-                              (ui (down-payment nil (:deal-type (h/->map params)))))}]]))
+                              (ui (down-payment (:deal-type (h/->map params)))))}]]))
