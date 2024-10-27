@@ -3,5 +3,6 @@
    [clojure.string :as s]))
 
 (defn ->map [m]
-  (zipmap (map #(keyword (s/replace %1 #"\s+" "-")) (keys m))
+  (zipmap (map #(if (keyword? %) % (keyword (s/replace % #"\s+" "-")))
+               (keys m))
           (vals m)))
