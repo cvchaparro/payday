@@ -83,9 +83,8 @@
                        [:li.my-4
                         [:div.card
                          [:header.card-header
-                          [:div.card-header-title.is-centered.is-vcentered
-                           [:div.is-large
-                            (clojure.string/join ", " (map clojure.string/trim (clojure.string/split members #",")))]]]
+                          [:div.card-header-title.is-centered
+                           [:h4.py-2.my-2 (interpose [:br] (map s/trim (s/split members #",")))]]]
                          [:hr.my-0]
                          [:div.card-content
                           [:div [:strong "Email: "] [:a {:href (format "mailto:%s" email)} email]]
