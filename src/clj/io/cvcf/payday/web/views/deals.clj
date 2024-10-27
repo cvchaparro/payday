@@ -72,40 +72,41 @@
   [:div.column.is-two-fifths {:id eid}
    [:h3.title.is-3 "Deals"]
    [:div.content
-    (vec (concat [:ol]
-                 (mapv (fn [deal]
-                         (let [{:keys [date members email phone second_phone
-                                       addr_street addr_city addr_state addr_zip addr_country
-                                       tour_type frontline_rep
-                                       contract_num member_num deal_type down_payment turn_over split]}
-                               deal]
-                           [:li
-                            [:div.card
-                             [:div.card-content
-                              [:div [:strong "Date: "] date]
-                              [:div [:strong "Contract #: "] contract_num]
-                              [:div [:strong "Member #: "] member_num]
-                              [:div
-                               [:strong "Guest(s): "]
-                               (clojure.string/join ", " (map clojure.string/trim (clojure.string/split members #",")))]
-                              [:div [:strong "Email: "] [:a {:href (format "mailto:%s" email)} email]]
-                              [:div [:strong "Phone: "] [:a {:href (format "tel:%s" phone)} phone]]
-                              (when second_phone
-                                [:div [:strong "Secondary Phone​: "] [:a {:href (format "tel:%s" second_phone)} second_phone]])
-                              [:div [:strong "Address:"]
-                               [:address
-                                addr_street [:br]
-                                addr_city ", " addr_state " " addr_zip [:br]
-                                addr_country]]
-                              [:div [:strong "Tour Type: "] tour_type]
-                              [:div [:strong "Frontline Rep: "] frontline_rep]
+    (vec
+     (concat [:ol]
+             (mapv (fn [deal]
+                     (let [{:keys [date members email phone second_phone
+                                   addr_street addr_city addr_state addr_zip addr_country
+                                   tour_type frontline_rep
+                                   contract_num member_num deal_type down_payment turn_over split]}
+                           deal]
+                       [:li
+                        [:div.card
+                         [:div.card-content
+                          [:div [:strong "Date: "] date]
+                          [:div [:strong "Contract #: "] contract_num]
+                          [:div [:strong "Member #: "] member_num]
+                          [:div
+                           [:strong "Guest(s): "]
+                           (clojure.string/join ", " (map clojure.string/trim (clojure.string/split members #",")))]
+                          [:div [:strong "Email: "] [:a {:href (format "mailto:%s" email)} email]]
+                          [:div [:strong "Phone: "] [:a {:href (format "tel:%s" phone)} phone]]
+                          (when second_phone
+                            [:div [:strong "Secondary Phone​: "] [:a {:href (format "tel:%s" second_phone)} second_phone]])
+                          [:div [:strong "Address:"]
+                           [:address
+                            addr_street [:br]
+                            addr_city ", " addr_state " " addr_zip [:br]
+                            addr_country]]
+                          [:div [:strong "Tour Type: "] tour_type]
+                          [:div [:strong "Frontline Rep: "] frontline_rep]
 
-                              [:div [:strong "Deal Type: "] deal_type]
-                              [:div [:strong "Down Payment: "] "$" down_payment]
-                              (when (and turn_over (seq turn_over))
-                                [:div [:strong "Turn Over: "] turn_over])
-                              [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]]]))
-                       (query-fn :get-deals {}))))]])
+                          [:div [:strong "Deal Type: "] deal_type]
+                          [:div [:strong "Down Payment: "] "$" down_payment]
+                          (when (and turn_over (seq turn_over))
+                            [:div [:strong "Turn Over: "] turn_over])
+                          [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]]]))
+                   (query-fn :get-deals {}))))]])
 
 (defn create-deal! [& {:keys [query-fn params eid]}]
   (let [{:keys [date name email phone
