@@ -72,7 +72,7 @@
   [:div.column.is-two-fifths {:id eid}
    [:h3.title.is-3 "Deals"]
    [:div.content
-    (vec (concat [:ol {:type "1"}]
+    (vec (concat [:ol]
                  (mapv (fn [deal]
                          (let [{:keys [date members email phone second_phone
                                        addr_street addr_city addr_state addr_zip addr_country
