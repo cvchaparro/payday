@@ -32,11 +32,11 @@
 
 (defn select [label values & {:keys [target-id endpoint selected]}]
   [:div.select
-   (let [n (s/lower-case label)]
+   (let [n (s/join "-" (s/split (s/lower-case label) #" "))]
      (into [] (concat [:select (attributes {:id n :name n}
                                            {:hx-target (id target-id) :hx-get endpoint :hx-swap "outerHTML"})
                        [:option {:selected (= selected label)} label]]
-                      (map #(vec [:option {:value %1 :selected (= selected %1)} %1]) values))))])
+                      (map #(vec [:option {:value % :selected (= selected %)} %]) values))))])
 
 (defn checkbox [label]
   (let [label (s/trim label)
