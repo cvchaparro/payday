@@ -80,13 +80,13 @@
                                    tour_type frontline_rep
                                    contract_num member_num deal_type down_payment turn_over split]}
                            deal]
-                       [:li
+                       [:li.my-4
                         [:div.card
                          [:header.card-header
                           [:div.card-header-title.is-centered.is-vcentered
                            [:div.is-large
                             (clojure.string/join ", " (map clojure.string/trim (clojure.string/split members #",")))]]]
-                         [:hr]
+                         [:hr.my-0]
                          [:div.card-content
                           [:div [:strong "Email: "] [:a {:href (format "mailto:%s" email)} email]]
                           [:div [:strong "Phone: "] [:a {:href (format "tel:%s" phone)} phone]]
