@@ -1,6 +1,8 @@
 CREATE TABLE IF NOT EXISTS deals (
   id            INTEGER       PRIMARY KEY AUTOINCREMENT,
-  date          DATE          NOT NULL DEFAULT CURRENT_DATE,
+  year          INTEGER       NOT NULL,
+  month         INTEGER       NOT NULL,
+  day           INTEGER       NOT NULL,
   members       VARCHAR(1000) NOT NULL,
   email         VARCHAR(100)  NOT NULL,
   phone         VARCHAR(30)   NOT NULL,

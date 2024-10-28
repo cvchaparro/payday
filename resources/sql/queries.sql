@@ -3,7 +3,9 @@
 -- :name add-deal! :! :n
 -- :doc Add a new deal
 INSERT INTO deals (
-  date,
+  year,
+  month,
+  day,
   members,
   email,
   phone,
@@ -24,7 +26,9 @@ INSERT INTO deals (
   turn_over,
   split
 ) values (
-  :date,
+  :year,
+  :month,
+  :day,
   :members,
   :email,
   :phone,

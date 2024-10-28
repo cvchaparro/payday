@@ -118,8 +118,11 @@
                 tour-type frontline-rep
                 contract member
                 deal-type down-payment split to]}
-        (h/->map params)]
-    (query-fn :add-deal! {:date          date
+        (h/->map params)
+        date (java.time.LocalDate/parse date)]
+    (query-fn :add-deal! {:year          (.getYear date)
+                          :month         (.getValue (.getMonth date))
+                          :day           (.getDayOfMonth date)
                           :members       name
                           :email         email
                           :phone         phone
