@@ -16,7 +16,7 @@
     [:label.label.subtitle.is-4 ~label]
     ~@body])
 
-(defn input [name & {:keys [eid type  placeholder required? classes nothing? extra]
+(defn input [name & {:keys [eid type  placeholder required? classes extra]
                      :or   {eid         (s/replace name #"\s+" "-")
                             type        "text"
                             placeholder (s/capitalize name)
