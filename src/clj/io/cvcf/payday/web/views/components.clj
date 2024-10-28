@@ -24,7 +24,7 @@
                             classes     ["input"]}}]
   [:input
    (attributes
-    {:id (id eid) :type type :name name}
+    {:id eid :type type :name name}
     (when placeholder {:placeholder placeholder})
     (when required?   {:required    required?})
     (when classes     {:class       (classes->str ["input"] classes)})
