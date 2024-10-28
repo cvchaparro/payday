@@ -31,6 +31,7 @@
      (c/field-group "Contact Information"
        (c/field "Email*" (c/input "email" :type "email" :placeholder "e.g. john.smith@email.com"))
        (c/field "Phone*" (c/input "phone" :type "phone" :placeholder "e.g. 123.456.7890"))
+       (c/field "Secondary Phone" (c/input "second-phone" :type "phone" :placeholder "e.g. 123.567.8900" :required? false))
 
        (c/field-group "Address"
          (c/field "Street*"   (c/input "street" :placeholder "e.g. 123 Main St"))
@@ -112,7 +113,7 @@
                    (query-fn :get-deals {}))))]])
 
 (defn create-deal! [& {:keys [query-fn params eid]}]
-  (let [{:keys [date name email phone
+  (let [{:keys [date name email phone second-phone
                 street city state zip-code country
                 tour-type frontline-rep
                 contract member
@@ -122,7 +123,7 @@
                           :members       name
                           :email         email
                           :phone         phone
-                          :second_phone  nil
+                          :second_phone  (when (seq second-phone) second-phone)
                           :addr_street   street
                           :addr_city     city
                           :addr_state    state
