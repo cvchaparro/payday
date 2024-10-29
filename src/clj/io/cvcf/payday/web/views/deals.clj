@@ -126,21 +126,21 @@
                           :members       name
                           :email         email
                           :phone         phone
-                          :second_phone  (when (seq second-phone) second-phone)
-                          :addr_street   street
-                          :addr_city     city
-                          :addr_state    state
-                          :addr_zip      zip-code
-                          :addr_country  country
+                          :second-phone  (when (seq second-phone) second-phone)
+                          :addr-street   street
+                          :addr-city     city
+                          :addr-state    state
+                          :addr-zip      zip-code
+                          :addr-country  country
 
-                          :tour_type     tour-type
-                          :frontline_rep frontline-rep
+                          :tour-type     tour-type
+                          :frontline-rep frontline-rep
 
-                          :contract_num  contract
-                          :member_num    member
-                          :deal_type     deal-type
-                          :down_payment  down-payment
-                          :turn_over     (when (seq to) to)
+                          :contract-num  contract
+                          :member-num    member
+                          :deal-type     deal-type
+                          :down-payment  down-payment
+                          :turn-over     (when (seq to) to)
                           :split         (and split (contains? #{"on" "true"} split))})
     (ui (all-deals :query-fn query-fn :eid eid))))
 
