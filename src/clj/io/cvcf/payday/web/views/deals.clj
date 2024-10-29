@@ -76,7 +76,7 @@
     (vec
      (concat [:ol]
              (mapv (fn [deal]
-                     (let [{:keys [date members email phone second_phone
+                     (let [{:keys [year month day members email phone second_phone
                                    addr_street addr_city addr_state addr_zip addr_country
                                    tour_type frontline_rep
                                    contract_num member_num deal_type down_payment turn_over split]}
@@ -107,7 +107,7 @@
                             [:div [:strong "Turn Over: "] turn_over])
                           [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]
                          [:div.card-footer
-                          [:div.card-footer-item [:div.is-small date]]
+                          [:div.card-footer-item [:div.is-small (s/join "-" [year month day])]]
                           [:div.card-footer-item [:strong "Contract #: "] contract_num]
                           [:div.card-footer-item [:strong "Member #: "] member_num]]]]))
                    (query-fn :get-deals {}))))]])
