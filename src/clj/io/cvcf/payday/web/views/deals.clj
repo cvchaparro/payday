@@ -5,7 +5,7 @@
    [io.cvcf.payday.helpers :as h]
    [io.cvcf.payday.web.controllers.deals :as deals]
    [io.cvcf.payday.web.views.components :as c]
-   [io.cvcf.payday.web.htmx :refer [page-htmx ui]]))
+   [io.cvcf.payday.web.htmx :refer [page-htmx page]]))
 
 (defn down-payment [selected]
   (let [selected (keyword selected)
@@ -142,7 +142,7 @@
                           :down-payment  down-payment
                           :turn-over     (when (seq to) to)
                           :split         (and split (contains? #{"on" "true"} split))})
-    (ui (all-deals :query-fn query-fn :eid eid))))
+    (page (all-deals :query-fn query-fn :eid eid))))
 
 (defn deals-routes [{:keys [query-fn]}]
   (let [deals-list-id "deals-list"]
@@ -151,11 +151,11 @@
                              (new-deal :target-id deals-list-id :endpoint "/deals/add")
                              (all-deals :query-fn query-fn :eid deals-list-id)]))}]
      ["/new" {:get (fn [_]
-                     (ui (new-deal :target-id deals-list-id :endpoint "/deals/add")))}]
+                     (page (new-deal :target-id deals-list-id :endpoint "/deals/add")))}]
      ["/add" {:post (fn [{:keys [params]}]
                       (create-deal! :query-fn query-fn :params params :eid deals-list-id))}]
      ["/all" {:get (fn [_]
                      (page-htmx [:div.columns.is-centered
                                  (all-deals :query-fn query-fn :eid deals-list-id)]))}]
      ["/down-payment" {:get (fn [{:keys [params]}]
-                              (ui (down-payment (:deal-type (h/->map params)))))}]]))
+                              (page (down-payment (:deal-type (h/->map params)))))}]]))
