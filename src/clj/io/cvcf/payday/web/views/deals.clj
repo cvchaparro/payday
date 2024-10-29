@@ -88,24 +88,26 @@
                            [:h4.py-2.my-2 (interpose [:br] (map s/trim (s/split members #",")))]]]
                          [:hr.my-0]
                          [:div.card-content
-                          [:div [:strong "Email: "] [:a {:href (format "mailto:%s" email)} email]]
-                          [:div [:strong "Phone: "] [:a {:href (format "tel:%s" phone)} phone]]
-                          (when second_phone
-                            [:div [:strong "Secondary Phone​: "] [:a {:href (format "tel:%s" second_phone)} second_phone]])
-                          [:div [:strong "Address:"]
-                           [:address
-                            addr_street [:br]
-                            addr_city ", " addr_state " " addr_zip [:br]
-                            addr_country]]
-                          [:br]
-                          [:div [:strong "Tour Type: "] tour_type]
-                          [:div [:strong "Frontline Rep: "] frontline_rep]
+                          [:div.columns.is-centered
+                           [:div.column
+                            [:div [:strong "Email: "] [:a {:href (format "mailto:%s" email)} email]]
+                            [:div [:strong "Phone: "] [:a {:href (format "tel:%s" phone)} phone]]
+                            (when second_phone
+                              [:div [:strong "Secondary Phone​: "] [:a {:href (format "tel:%s" second_phone)} second_phone]])
+                            [:div [:strong "Address:"]
+                             [:address
+                              addr_street [:br]
+                              addr_city ", " addr_state " " addr_zip [:br]
+                              addr_country]]]
+                           [:div.column
+                            [:div [:strong "Tour Type: "] tour_type]
+                            [:div [:strong "Frontline Rep: "] frontline_rep]
 
-                          [:div [:strong "Deal Type: "] deal_type]
-                          [:div [:strong "Down Payment: "] "$" down_payment]
-                          (when (and turn_over (seq turn_over))
-                            [:div [:strong "Turn Over: "] turn_over])
-                          [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]
+                            [:div [:strong "Deal Type: "] deal_type]
+                            [:div [:strong "Down Payment: "] "$" (format "%.2f" down_payment)]
+                            (when (and turn_over (seq turn_over))
+                              [:div [:strong "Turn Over: "] turn_over])
+                            [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]]]
                          [:div.card-footer
                           [:div.card-footer-item [:div.is-small (s/join "-" [year month day])]]
                           [:div.card-footer-item [:strong "Contract #: "] contract_num]
