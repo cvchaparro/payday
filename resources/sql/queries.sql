@@ -70,6 +70,29 @@ SELECT * FROM deals
  id = :id;
 
 
+-- :name get-deals-by-year :? :*
+-- :doc Return all the deals for a given year
+SELECT * FROM deals
+ WHERE
+   year = :year;
+
+
+-- :name get-deals-by-month :? :*
+-- :doc Return all the deals for a given month
+SELECT * FROM deals
+ WHERE
+   year  = :year AND
+   month = :month;
+
+-- :name get-deals-by-day :? :*
+-- :doc Return all the deals for a given day
+SELECT * FROM deals
+ WHERE
+   year  = :year AND
+   month = :month AND
+   day   = :day;
+
+
 -- :name get-deals :? :*
 -- :doc Return all the deals
 SELECT * FROM deals;
