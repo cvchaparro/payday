@@ -2,6 +2,8 @@
   (:require
    [clojure.string :as s]))
 
+(def commission-minimum-percentage 0.11)
+(def commission-cutoff-percentage  0.12)
 (def deal-types {:300k {:name "300k"
                         :min-down 349
                         :down-cutoff 1300
