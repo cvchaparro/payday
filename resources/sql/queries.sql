@@ -69,7 +69,7 @@ DELETE FROM deals;
 -- :doc Return the deal with the given ID
 SELECT * FROM deals
  WHERE
- id = :id;
+   id = :id;
 
 
 -- :name get-deals-by-year :? :*
