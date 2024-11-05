@@ -12,7 +12,7 @@
     [:div.control ~@body]])
 
 (defmacro field-group [label & body]
-  `[:div.field
+  `[:div.field-group
     [:label.label.subtitle.is-4 ~label]
     ~@body])
 
