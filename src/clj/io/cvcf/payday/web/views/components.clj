@@ -30,13 +30,18 @@
     (when classes     {:class       (classes->str ["input"] classes)})
     extra)])
 
-(defn select [label values & {:keys [target-id endpoint selected]}]
+(defn options [label values selected]
+  (into [[:option {:value "" :selected (= selected label)} label]]
+        (map #(vec [:option {:value % :selected (= selected %)} %]) values)))
+
+(defn select [label values & {:keys [target-id endpoint selected extra]}]
   [:div.select
-   (let [n (s/join "-" (s/split (s/lower-case label) #" "))]
-     (into [] (concat [:select (attributes {:id n :name n}
-                                           {:hx-target (id target-id) :hx-get endpoint :hx-swap "outerHTML"})
-                       [:option {:selected (= selected label)} label]]
-                      (map #(vec [:option {:value % :selected (= selected %)} %]) values))))])
+   (let [n (->> (-> label s/lower-case (s/split #" ")) (s/join "-"))]
+     (into [:select (attributes {:id n :name n}
+                                (when target-id {:hx-target (id target-id) :hx-swap "outerHTML"})
+                                (when endpoint  {:hx-get endpoint})
+                                extra)]
+           (options label values selected)))])
 
 (defn checkbox [label]
   (let [label (s/trim label)
