@@ -51,9 +51,9 @@
       [:label.checkbox (input name :type "checkbox" :placeholder nil :classes nil :required? nil)
        (format " %s" label)]]]))
 
-(defn button [label & {:keys [type classes]
+(defn button [label & {:keys [type classes extra]
                        :or   {type    "button"
                               classes ["button"]}}]
   [:div.field
    [:div.control
-    [:input {:class (classes->str ["button"] classes) :type type :value label}]]])
+    [:input (attributes {:class (classes->str ["button"] classes) :type type :value label} extra)]]])
