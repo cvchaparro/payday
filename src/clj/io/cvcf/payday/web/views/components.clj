@@ -16,10 +16,10 @@
     [:label.label.subtitle.is-4 ~label]
     ~@body])
 
-(defn input [name & {:keys [eid type  placeholder required? classes extra]
-                     :or   {eid         (s/replace name #"\s+" "-")
+(defn input [name & {:keys [eid type placeholder required? classes extra]
+                     :or   {eid         (-> name s/lower-case (s/replace #"\s+" "-"))
                             type        "text"
-                            placeholder (s/capitalize name)
+                            placeholder (-> name s/capitalize (s/replace #"-" " "))
                             required?   true
                             classes     ["input"]}}]
   [:input
