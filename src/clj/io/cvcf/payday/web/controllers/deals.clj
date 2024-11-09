@@ -49,7 +49,7 @@
 
 (defn get-date-part [db part & args]
   (mapv #(format "%02d" %)
-        (set (map part (apply get-deals db args)))))
+        (sort (set (map part (apply get-deals db args))))))
 
 (defn get-years [db]
   (get-date-part db :year))
