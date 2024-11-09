@@ -37,7 +37,7 @@
          (c/field "Street*"   (c/input "street" :placeholder "e.g. 123 Main St"))
          (c/field "City*"     (c/input "city" :placeholder "e.g. Anycity"))
          (c/field "State*"    (c/input "state" :placeholder "e.g. Anystate"))
-         (c/field "Zip code*" (c/input "zip-code" :type "number" :placeholder "e.g. 12345"))
+         (c/field "Zip code*" (c/input "zip-code" :placeholder "e.g. 12345"))
          (c/field "Country*"  (c/input "country" :placeholder "e.g. USA"))))
 
      (c/field-group "Tour Information"
