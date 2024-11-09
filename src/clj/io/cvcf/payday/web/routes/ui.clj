@@ -9,6 +9,7 @@
    [io.cvcf.payday.web.middleware.formats :as formats]
 
    ;; Routes
+   [io.cvcf.payday.web.views.calculator :as calc]
    [io.cvcf.payday.web.views.deals :as deals]))
 
 (defn route-data [opts]
@@ -28,6 +29,7 @@
 
 (defn page-routes [opts]
   [;; Primary routes
+   ["/calc"  (calc/calculator-routes opts)]
    ["/deals" (deals/deals-routes opts)]])
 
 (defmethod ig/init-key :reitit.routes/ui
