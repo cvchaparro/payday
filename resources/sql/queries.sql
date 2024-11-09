@@ -1,6 +1,6 @@
 -- Place your queries here. Docs available https://www.hugsql.org/
 
--- :name add-deal! :! :n
+-- :name add-deal! :! :1
 -- :doc Add a new deal
 INSERT INTO deals (
   year,
@@ -32,7 +32,8 @@ INSERT INTO deals (
   :month,
   :day,
   :members,
-  :email,
+  :primary-email,
+  :secondary-email,
   :primary-phone,
   :secondary-phone,
   :street,
@@ -53,41 +54,42 @@ INSERT INTO deals (
 );
 
 
--- :name remove-deal-by-id! :! :n
+-- :name remove-deal-by-id! :! :1
 -- :doc Remove a deal by the specified ID
 DELETE FROM deals
  WHERE
    id = :id;
 
 
--- :name remove-deals! :! :n
+-- :name remove-deals! :! :*
 -- :doc Remove all deals
 DELETE FROM deals;
 
 
--- :name get-deal-by-id :? :1
+-- :name get-by-id :? :1
 -- :doc Return the deal with the given ID
-SELECT * FROM deals
+SELECT * FROM :i:table-name
  WHERE
    id = :id;
 
 
--- :name get-deals-by-year :? :*
--- :doc Return all the deals for a given year
-SELECT * FROM deals
+-- :name get-by-year :? :*
+-- :doc Return data for a given year
+SELECT * FROM :i:table-name
  WHERE
-   year = :year;
+   :i:year = :year;
 
 
--- :name get-deals-by-month :? :*
--- :doc Return all the deals for a given month
-SELECT * FROM deals
+-- :name get-by-month :? :*
+-- :doc Return data for a given month
+SELECT * FROM :i:table-name
  WHERE
-   year  = :year AND
-   month = :month;
+   :i:year  = :year AND
+   :i:month = :month;
 
--- :name get-deals-by-day :? :*
--- :doc Return all the deals for a given day
+
+-- :name get-by-day :? :*
+-- :doc Return data for a given day
 SELECT * FROM deals
  WHERE
    year  = :year AND

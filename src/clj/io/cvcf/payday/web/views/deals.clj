@@ -2,10 +2,12 @@
   (:require
    [clojure.string :as s]
 
-   [io.cvcf.payday.helpers :as h]
    [io.cvcf.payday.web.controllers.deals :as deals]
+   [io.cvcf.payday.web.htmx :refer [page-htmx page]]
    [io.cvcf.payday.web.views.components :as c]
-   [io.cvcf.payday.web.htmx :refer [page-htmx page]]))
+
+   ;; Helpers
+   [io.cvcf.payday.helpers :as h]))
 
 (defn down-payment [selected]
   (let [selected (keyword selected)
@@ -29,9 +31,10 @@
        (c/field "Full Name*" (c/input "name" :placeholder "e.g. John Smith")))
 
      (c/field-group "Contact Information"
-       (c/field "Email*" (c/input "email" :type "email" :placeholder "e.g. john.smith@email.com"))
-       (c/field "Phone*" (c/input "phone" :type "phone" :placeholder "e.g. 123.456.7890"))
-       (c/field "Secondary Phone" (c/input "second-phone" :type "phone" :placeholder "e.g. 123.567.8900" :required? false))
+       (c/field "Email*" (c/input "primary-email" :type "email" :placeholder "e.g. john.smith@email.com"))
+       (c/field "Secondary Email" (c/input "secondary-email" :type "email" :placeholder "e.g. john.smith2@email.com" :required? false))
+       (c/field "Phone*" (c/input "primary-phone" :type "phone" :placeholder "e.g. 123.456.7890"))
+       (c/field "Secondary Phone" (c/input "secondary-phone" :type "phone" :placeholder "e.g. 123.567.8900" :required? false))
 
        (c/field-group "Address"
          (c/field "Street*"   (c/input "street" :placeholder "e.g. 123 Main St"))
@@ -69,95 +72,74 @@
        [:div.buttons.is-centered
         (c/button "Add" :type "submit" :classes ["is-primary" "is-medium"])])]]])
 
-(defn all-deals [& {:keys [query-fn eid]}]
+(defn show-deal [deal]
+  (let [{:keys [year month day members
+                primaryemail secondaryemail primaryphone secondaryphone
+                street city state zip country
+                tourtype frontlinerep
+                contractnum membernum
+                dealtype downpayment turnover split]}
+        deal]
+    [:li.my-4
+     [:div.card
+      [:header.card-header
+       [:div.card-header-title.is-centered
+        [:h4.py-2.my-2 (interpose [:br] (map s/trim (s/split members #",")))]]]
+      [:hr.my-0]
+      [:div.card-content
+       [:div.columns.is-centered
+        [:div.column
+         [:div [:strong "Email: "] [:a {:href (format "mailto:%s" primaryemail)} primaryemail]]
+         (when secondaryemail
+           [:div [:strong "Secondary Email: "] [:a {:href (format "mailto:%s" secondaryemail)} secondaryemail]])
+         [:div [:strong "Phone: "] [:a {:href (format "tel:%s" primaryphone)} primaryphone]]
+         (when secondaryphone
+           [:div [:strong "Secondary Phone​: "] [:a {:href (format "tel:%s" secondaryphone)} secondaryphone]])
+         [:div [:strong "Address:"]
+          [:address
+           street [:br]
+           city ", " state " " zip [:br]
+           country]]]
+        [:div.column
+         [:div [:strong "Tour Type: "] tourtype]
+         [:div [:strong "Frontline Rep: "] frontlinerep]
+
+         [:div [:strong "Deal Type: "] dealtype]
+         [:div [:strong "Down Payment: "] "$" (format "%.2f" downpayment)]
+         (when (and turnover (seq turnover))
+           [:div [:strong "Turn Over: "] turnover])
+         [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]]]
+      [:div.card-footer
+       [:div.card-footer-item [:div.is-small (s/join "-" (map #(format "%02d" %) [year month day]))]]
+       [:div.card-footer-item [:strong "Contract #: "] contractnum]
+       [:div.card-footer-item [:strong "Member #: "] membernum]]]]))
+
+(defn all-deals [& {:keys [db eid]}]
   [:div.column.is-two-fifths {:id eid}
    [:h3.title.is-3 "Deals"]
    [:div.content
-    (vec
-     (concat [:ol]
-             (mapv (fn [deal]
-                     (let [{:keys [year month day members email phone second_phone
-                                   addr_street addr_city addr_state addr_zip addr_country
-                                   tour_type frontline_rep
-                                   contract_num member_num deal_type down_payment turn_over split]}
-                           deal]
-                       [:li.my-4
-                        [:div.card
-                         [:header.card-header
-                          [:div.card-header-title.is-centered
-                           [:h4.py-2.my-2 (interpose [:br] (map s/trim (s/split members #",")))]]]
-                         [:hr.my-0]
-                         [:div.card-content
-                          [:div.columns.is-centered
-                           [:div.column
-                            [:div [:strong "Email: "] [:a {:href (format "mailto:%s" email)} email]]
-                            [:div [:strong "Phone: "] [:a {:href (format "tel:%s" phone)} phone]]
-                            (when second_phone
-                              [:div [:strong "Secondary Phone​: "] [:a {:href (format "tel:%s" second_phone)} second_phone]])
-                            [:div [:strong "Address:"]
-                             [:address
-                              addr_street [:br]
-                              addr_city ", " addr_state " " addr_zip [:br]
-                              addr_country]]]
-                           [:div.column
-                            [:div [:strong "Tour Type: "] tour_type]
-                            [:div [:strong "Frontline Rep: "] frontline_rep]
+    (vec (concat [:ol] (mapv show-deal (deals/get-deals db))))]])
 
-                            [:div [:strong "Deal Type: "] deal_type]
-                            [:div [:strong "Down Payment: "] "$" (format "%.2f" down_payment)]
-                            (when (and turn_over (seq turn_over))
-                              [:div [:strong "Turn Over: "] turn_over])
-                            [:div [:strong "Split?: "] (if (and split (not (zero? split))) "Yes" "No")]]]]
-                         [:div.card-footer
-                          [:div.card-footer-item [:div.is-small (s/join "-" [year month day])]]
-                          [:div.card-footer-item [:strong "Contract #: "] contract_num]
-                          [:div.card-footer-item [:strong "Member #: "] member_num]]]]))
-                   (query-fn :get-deals {}))))]])
-
-(defn create-deal! [& {:keys [query-fn params eid]}]
-  (let [{:keys [date name email phone second-phone
-                street city state zip-code country
-                tour-type frontline-rep
-                contract member
-                deal-type down-payment split to]}
-        (h/->map params)
-        date (java.time.LocalDate/parse date)]
-    (query-fn :add-deal! {:year          (.getYear date)
-                          :month         (.getValue (.getMonth date))
-                          :day           (.getDayOfMonth date)
-                          :members       name
-                          :email         email
-                          :phone         phone
-                          :second-phone  (when (seq second-phone) second-phone)
-                          :addr-street   street
-                          :addr-city     city
-                          :addr-state    state
-                          :addr-zip      zip-code
-                          :addr-country  country
-
-                          :tour-type     tour-type
-                          :frontline-rep frontline-rep
-
-                          :contract-num  contract
-                          :member-num    member
-                          :deal-type     deal-type
-                          :down-payment  down-payment
-                          :turn-over     (when (seq to) to)
-                          :split         (and split (contains? #{"on" "true"} split))})
-    (page (all-deals :query-fn query-fn :eid eid))))
+(defn create-deal! [& {:keys [db params eid]}]
+  (deals/save-deal! db params)
+  (page (all-deals :db db :eid eid)))
 
 (defn deals-routes [{:keys [query-fn]}]
   (let [deals-list-id "deals-list"]
     [["" {:get (fn [_]
                  (page-htmx [:div.columns.is-centered
                              (new-deal :target-id deals-list-id :endpoint "/deals/add")
-                             (all-deals :query-fn query-fn :eid deals-list-id)]))}]
+                             (all-deals :db query-fn :eid deals-list-id)]))}]
      ["/new" {:get (fn [_]
                      (page (new-deal :target-id deals-list-id :endpoint "/deals/add")))}]
      ["/add" {:post (fn [{:keys [params]}]
-                      (create-deal! :query-fn query-fn :params params :eid deals-list-id))}]
+                      (create-deal! :db query-fn :params params :eid deals-list-id))}]
      ["/all" {:get (fn [_]
                      (page-htmx [:div.columns.is-centered
-                                 (all-deals :query-fn query-fn :eid deals-list-id)]))}]
+                                 (all-deals :db query-fn :eid deals-list-id)]))}]
+     ["/get" {:post (fn [{:keys [params]}]
+                      (let [{:keys [year month day deal-id]} params
+                            deals (deals/get-deals query-fn :year year :month month :day day :id deal-id)]
+                        (page [:div.content (vec (concat [:ol] (mapv show-deal deals)))])))}]
      ["/down-payment" {:get (fn [{:keys [params]}]
                               (page (down-payment (:deal-type (h/->map params)))))}]]))
