@@ -26,7 +26,10 @@
                                             :git/sha "a107d7a8a69755dae6cd9954992614a86504c257"}
         io.github.kit-clj/kit-sql-conman   {:mvn/version "1.10.4"}
         io.github.kit-clj/kit-sql-migratus {:mvn/version "1.0.4"}
-        org.xerial/sqlite-jdbc             {:mvn/version "3.46.0.0"}}
+        org.xerial/sqlite-jdbc             {:mvn/version "3.46.0.0"}
+
+        ;; Extras
+        clojurewerkz/money                 {:mvn/version "1.10.0"}}
  :aliases {:build {:deps       {io.github.clojure/tools.build {:mvn/version "0.9.6"}}
                    :ns-default build}
 
