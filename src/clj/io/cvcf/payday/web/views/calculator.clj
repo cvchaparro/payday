@@ -5,7 +5,12 @@
 
    ;; Controllers
    [io.cvcf.payday.web.controllers.calculator :as calc]
-   [io.cvcf.payday.web.controllers.deals :as deals]))
+   [io.cvcf.payday.web.controllers.deals :as deals]
+
+   ;; Currency
+   [clojurewerkz.money.amounts :as amounts]
+   [clojurewerkz.money.currencies :as currencies]
+   [clojurewerkz.money.format :as mf]))
 
 (defn get-values [func params]
   (if (every? Character/isDigit (apply str params))
@@ -56,14 +61,17 @@
     [:div#deals-list]]
    [:div#data.column.is-two-fifths]])
 
+(defn f$ [amount]
+  (mf/format (amounts/amount-of currencies/USD amount)))
+
 (defn income [db params]
   [:div.fixed-grid.has-2-cols
    [:div.grid
     [:div.cell [:strong "Commission"]]
-    [:div.cell "$" (calc/calculate-commission db params)]
+    [:div.cell (f$ (calc/calculate-commission db params))]
 
     [:div.cell [:strong "Volume"]]
-    [:div.cell "$" (calc/calculate-volume db params)]]])
+    [:div.cell (f$ (calc/calculate-volume db params))]]])
 
 (defn calculator-routes [{:keys [query-fn]}]
   [[""           {:get  (fn [_]                (page-htmx (calculator :db query-fn)))}]
