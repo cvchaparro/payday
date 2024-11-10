@@ -77,20 +77,20 @@ SELECT * FROM :i:table-name
 -- :doc Return data for a given year
 SELECT * FROM :i:table-name
  WHERE
-   :i:year = :year;
+   year = :year;
 
 
 -- :name get-by-month :? :*
 -- :doc Return data for a given month
 SELECT * FROM :i:table-name
  WHERE
-   :i:year  = :year AND
-   :i:month = :month;
+   year  = :year AND
+   month = :month;
 
 
 -- :name get-by-day :? :*
 -- :doc Return data for a given day
-SELECT * FROM deals
+SELECT * FROM :i:table-name
  WHERE
    year  = :year AND
    month = :month AND
