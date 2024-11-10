@@ -33,7 +33,7 @@
    ["/deals" (deals/deals-routes opts)]])
 
 (defmethod ig/init-key :reitit.routes/ui
-  [_ {:keys [base-path query-fn]
+  [_ {:keys [base-path db]
       :or   {base-path ""}
       :as   opts}]
   (fn [] [base-path (route-data opts) (page-routes opts)]))

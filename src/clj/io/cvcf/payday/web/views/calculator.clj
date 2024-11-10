@@ -73,10 +73,10 @@
     [:div.cell [:strong "Volume"]]
     [:div.cell (f$ (calc/calculate-volume db params))]]])
 
-(defn calculator-routes [{:keys [query-fn]}]
-  [[""           {:get  (fn [_]                (page-htmx (calculator :db query-fn)))}]
-   ["/month"     {:get  (fn [{:keys [params]}] (page (get-months-select {:db query-fn :params params})))}]
-   ["/day"       {:get  (fn [{:keys [params]}] (page (get-days-select {:db query-fn :params params})))}]
+(defn calculator-routes [{:keys [db]}]
+  [[""           {:get  (fn [_]                (page-htmx (calculator :db db)))}]
+   ["/month"     {:get  (fn [{:keys [params]}] (page (get-months-select {:db db :params params})))}]
+   ["/day"       {:get  (fn [{:keys [params]}] (page (get-days-select {:db db :params params})))}]
    ["/calculate" {:post (fn [{:keys [params]}] (page
                                                 [:div#data.column.is-two-fifths
-                                                 (income query-fn params)]))}]])
+                                                 (income db params)]))}]])

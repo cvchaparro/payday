@@ -124,22 +124,22 @@
   (deals/save-deal! db params)
   (page (all-deals :db db :eid eid)))
 
-(defn deals-routes [{:keys [query-fn]}]
+(defn deals-routes [{:keys [db]}]
   (let [deals-list-id "deals-list"]
     [["" {:get (fn [_]
                  (page-htmx [:div.columns.is-centered
                              (new-deal :target-id deals-list-id :endpoint "/deals/add")
-                             (all-deals :db query-fn :eid deals-list-id)]))}]
+                             (all-deals :db db :eid deals-list-id)]))}]
      ["/new" {:get (fn [_]
                      (page (new-deal :target-id deals-list-id :endpoint "/deals/add")))}]
      ["/add" {:post (fn [{:keys [params]}]
-                      (create-deal! :db query-fn :params params :eid deals-list-id))}]
+                      (create-deal! :db db :params params :eid deals-list-id))}]
      ["/all" {:get (fn [_]
                      (page-htmx [:div.columns.is-centered
-                                 (all-deals :db query-fn :eid deals-list-id)]))}]
+                                 (all-deals :db db :eid deals-list-id)]))}]
      ["/get" {:post (fn [{:keys [params]}]
                       (let [{:keys [year month day deal-id]} params
-                            deals (deals/get-deals query-fn :year year :month month :day day :id deal-id)]
+                            deals (deals/get-deals db :year year :month month :day day :id deal-id)]
                         (page [:div.content (vec (concat [:ol] (mapv show-deal deals)))])))}]
      ["/down-payment" {:get (fn [{:keys [params]}]
                               (page (down-payment (:deal-type (h/->map params)))))}]]))
