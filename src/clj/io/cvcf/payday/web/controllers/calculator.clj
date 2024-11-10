@@ -3,7 +3,7 @@
    [io.cvcf.payday.web.controllers.deals :as deals]))
 
 (defn get-deal-type [deal]
-  ((comp #(get deals/deal-types %) keyword :deal_type) deal))
+  ((comp #(get deals/deal-types %) keyword :dealtype) deal))
 
 (defn get-volume
   [db & {:keys [year month day id]}]
@@ -13,10 +13,10 @@
 (defn get-commission
   [db & {:keys [year month day id]}]
   (map (fn [deal]
-         (let [deal-type (get-deal-type [deal])
-               down   (:down_payment deal)
-               cutoff (:down-cutoff deal-type)
-               volume (:volume deal-type)]
+         (let [deal-type (get-deal-type deal)
+               down      (:downpayment deal)
+               cutoff    (:down-cutoff deal-type)
+               volume    (:volume deal-type)]
            (* volume
               (if (>= down cutoff)
                 deals/commission-cutoff-percentage
