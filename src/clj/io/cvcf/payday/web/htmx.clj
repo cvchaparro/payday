@@ -14,6 +14,7 @@
    [:head
     [:meta {:charset "UTF-8"}]
     [:title "Wyndham Payday"]
-    [:link {:href "/css/bulma.min.css" :rel "stylesheet" :type "text/css"}]
-    [:script {:src "/js/htmx.min.js" :defer true}]]
+    [:link {:href "/css/all.min.css" :rel "stylesheet" :type "text/css"}]
+    [:script {:src "/js/htmx.min.js" :defer true}]
+    [:script {:src "/js/tailwind.min.js" :defer true}]]
    [:body (render/walk-attrs body)]))
